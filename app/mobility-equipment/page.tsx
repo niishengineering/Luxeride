@@ -2,6 +2,8 @@ import React from 'react';
 import { getMobilityPageData, getMobilityEquipment } from '@/lib/api/mobility';
 import MobilityView from '@/components/equipment/MobilityView';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
 
   const [pageData, equipmentList] = await Promise.all([

@@ -3,14 +3,14 @@ import { cookies } from "next/headers";
 import { UserInfo } from "../types/auth";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 export const UpdateUser = async (UserPayload: Partial<UserInfo>, user_id: number) => {
   try {
     const cookiesList = await cookies();
     const sessionToken = cookiesList.get("session_token")?.value;
-   
+
 
     if (!sessionToken) {
       return { status: "fail", message: "No session token found" };
@@ -84,7 +84,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
       message: 'An error occurred while changing password',
     };
   }
-}   
+}
 
 
 export async function uploadProfileImageAction(formData: FormData) {
@@ -106,13 +106,13 @@ export async function uploadProfileImageAction(formData: FormData) {
     });
 
     const data = await res.json();
-    
+
     if (!res.ok) {
-      return { 
-        status: "fail", 
-        message: data.message || "Upload failed from external API" 
+      return {
+        status: "fail",
+        message: data.message || "Upload failed from external API"
       };
-    } 
+    }
 
     return { status: "success", data };
   } catch (error) {
@@ -145,7 +145,7 @@ export async function fetchUserProfile(userId: string | number) {
 
     const data = await res.json();
     return { status: "success", user: data.user_info };
-    
+
   } catch (error) {
     console.error("Get User Profile API Error:", error);
     return { status: "fail", message: "An error occurred while fetching user profile" };

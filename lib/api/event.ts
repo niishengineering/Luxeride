@@ -11,23 +11,23 @@ export type Event = {
   id: number;
   title: string;
   content: string;
-  excerpt: string;      
-  featured_image: string; 
+  excerpt: string;
+  featured_image: string;
   categories: EventCategory[];
   location: string;
-  date: string;          
+  date: string;
 };
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 
 export interface EventCategory {
-  id: string | number; 
+  id: string | number;
   name: string;
   slug: string;
   count?: number;
@@ -44,7 +44,7 @@ export async function getEventCategories(): Promise<EventCategory[]> {
   }
 
   const json = await res.json();
-  const apiCategories = json.data;
+  const apiCategories = json.data || [];
 
   const allOption: EventCategory = {
     id: 'all',

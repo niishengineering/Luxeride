@@ -29,8 +29,8 @@ export interface EquipmentItem {
   title: string;
   description: string;
   image_url: string;
-  price_per_day: string; 
-  price_per_week: string; 
+  price_per_day: string;
+  price_per_week: string;
   features: EquipmentFeature[];
   link: string;
 }
@@ -42,11 +42,14 @@ export interface EquipmentListResponse {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+if (!API_BASE_URL) {
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
+}
 
 export async function getMobilityPageData(): Promise<MobilityPageData | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/get-mobility-page-data`, { 
-      cache: 'no-store', 
+    const res = await fetch(`${API_BASE_URL}/get-mobility-page-data`, {
+      cache: 'no-store',
     });
     if (!res.ok) return null;
     const json: PageDataResponse = await res.json();
@@ -60,7 +63,7 @@ export async function getMobilityPageData(): Promise<MobilityPageData | null> {
 
 export async function getMobilityEquipment(): Promise<EquipmentItem[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/get-all-mobility-equipment`, { 
+    const res = await fetch(`${API_BASE_URL}/get-all-mobility-equipment`, {
       cache: 'no-store',
     });
     if (!res.ok) return [];

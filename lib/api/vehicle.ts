@@ -22,14 +22,14 @@ interface ApiResponse {
 
 export async function getAllVehicles() {
   if (!API_BASE_URL) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+    console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
   }
 
   try {
     const res = await fetch(`${API_BASE_URL}/get-all-vehicles`, {
       method: 'GET',
       headers: { "Content-Type": "application/json" },
-      cache: 'no-store' 
+      cache: 'no-store'
     });
 
     if (!res.ok) {
@@ -40,9 +40,9 @@ export async function getAllVehicles() {
     const rawVehicles = json.data?.vehicles || [];
     const filteredVehicles = rawVehicles.filter(v => v.title !== null);
 
-    return { 
-      success: true, 
-      data: filteredVehicles 
+    return {
+      success: true,
+      data: filteredVehicles
     };
 
   } catch (error) {
@@ -61,7 +61,7 @@ export async function getVehicleById(id: string | string[]) {
         'Content-Type': 'application/json',
       },
       // Cache the data for 60 seconds to improve speed
-      next: { revalidate: 60 } 
+      next: { revalidate: 60 }
     });
 
     if (!response.ok) {
@@ -73,7 +73,7 @@ export async function getVehicleById(id: string | string[]) {
     if (result.status === "success") {
       return result.data;
     }
-    
+
     return null;
   } catch (error) {
     console.error("Error fetching vehicle:", error);

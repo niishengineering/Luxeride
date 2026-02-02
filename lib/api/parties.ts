@@ -6,8 +6,8 @@ export interface PartyBus {
   description: string;
   image_url: string;
   image_title: string;
-  features: string[]; 
-  price: string ;
+  features: string[];
+  price: string;
   location: string;
   min_booking_hours: string;
   rating: string;
@@ -26,6 +26,10 @@ export interface PartiesPageData {
   parties_section: PartyBus[];
 }
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+if (!API_BASE_URL) {
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
+}
+
 export const getPartiesPageData = async (): Promise<{ status: string; data: PartiesPageData }> => {
 
 
@@ -35,7 +39,7 @@ export const getPartiesPageData = async (): Promise<{ status: string; data: Part
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store', 
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -50,13 +54,13 @@ export const getPartiesPageData = async (): Promise<{ status: string; data: Part
 };
 
 export const getPartyById = async (id: number): Promise<{ status: string; data: PartyBus }> => {
-  try { 
+  try {
     const response = await fetch(`${API_BASE_URL}/get-party-details/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store', 
+      cache: 'no-store',
     });
 
     if (!response.ok) {

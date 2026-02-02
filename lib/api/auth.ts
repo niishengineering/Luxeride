@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { UserInfo } from "../types/auth";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 export type LoginPayload = {
@@ -19,27 +19,27 @@ export type LoginResponse =
 export async function loginUser(
   payload: LoginPayload
 ): Promise<LoginResponse> {
-  try{
-  const res = await fetch(`${API_BASE_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const res = await fetch(`${API_BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (!res.ok || data.status !== 'success') {
-    return {
-      status: "fail",
-      message: data.message || "Login failed",
-    };
-  }
+    if (!res.ok || data.status !== 'success') {
+      return {
+        status: "fail",
+        message: data.message || "Login failed",
+      };
+    }
 
-  //Cookies logic 
-  const expiresAt = new Date(data.security.expires_in * 1000);
-  (await cookies()).set('session_token', data.security.token, {
+    //Cookies logic 
+    const expiresAt = new Date(data.security.expires_in * 1000);
+    (await cookies()).set('session_token', data.security.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       expires: expiresAt,
@@ -47,19 +47,19 @@ export async function loginUser(
       path: '/',
     });
 
-  return { 
-      status: "success", 
+    return {
+      status: "success",
       user: data.user_info
     };
 
+  }
+  catch (error) {
+    return {
+      status: "fail",
+      message: "An error occurred during login.",
+    };
+  }
 }
-catch (error) {
-  return {
-    status: "fail",
-    message: "An error occurred during login.",
-  };
-}
-} 
 
 export async function registerUser(payload: any) {
   const res = await fetch(`${API_BASE_URL}/create_user`, {
@@ -93,7 +93,7 @@ export async function checkAuthSession() {
   if (!token) {
     return false;
   }
-  
+
   return true;
 }
 

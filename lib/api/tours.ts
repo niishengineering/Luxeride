@@ -30,10 +30,13 @@ export interface CityToursApiResponse {
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+if (!API_BASE_URL) {
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
+}
 
 export async function getCityToursData(): Promise<CityToursData | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/get-all-tours`, { 
+    const res = await fetch(`${API_BASE_URL}/get-all-tours`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

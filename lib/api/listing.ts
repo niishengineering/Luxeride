@@ -14,7 +14,7 @@ export interface VehicleListingPayload {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 export const submitVehicleListing = async (payload: VehicleListingPayload) => {
@@ -35,6 +35,6 @@ export const submitVehicleListing = async (payload: VehicleListingPayload) => {
     return await response.json();
   } catch (error) {
     console.error('Listing Error:', error);
-    throw error; 
+    throw error;
   }
 };

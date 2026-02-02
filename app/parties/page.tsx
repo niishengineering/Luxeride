@@ -1,8 +1,9 @@
-
 import React from 'react';
 import { getPartiesPageData } from '@/lib/api/parties';
 import PartyView from '@/components/parties/PartyView';
-import { toast } from 'sonner';
+
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   let data = null;
   let error = false;
@@ -15,7 +16,7 @@ export default async function Page() {
       error = true;
     }
   } catch (e) {
-    toast.error(`Error fetching party data.${e}`);
+    console.error(`Error fetching party data:`, e);
     error = true;
   }
 

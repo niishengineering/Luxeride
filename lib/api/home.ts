@@ -3,17 +3,17 @@ import { WhyChooseUsFeature } from "@/components/home/TrustSection";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+  console.warn("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 export type HomeData = {
   hero: {
     background_image: string;
   };
-services: {
-  limo_card: { title: string; description: string }[];
-  logistics_card: { title: string; description: string }[];
-}
+  services: {
+    limo_card: { title: string; description: string }[];
+    logistics_card: { title: string; description: string }[];
+  }
   featured_vehicles: FeaturedVehicle[] | null;
   mobility_equipment: any[];
   moving_services: any[];
@@ -24,14 +24,14 @@ services: {
 
 export type GetHomeDataResponse =
   | {
-      status: "success";
-      message: string;
-      data: HomeData;
-    }
+    status: "success";
+    message: string;
+    data: HomeData;
+  }
   | {
-      status: "fail";
-      message: string;
-    };
+    status: "fail";
+    message: string;
+  };
 
 
 export async function getHomeData(): Promise<GetHomeDataResponse> {
