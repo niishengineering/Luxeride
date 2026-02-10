@@ -70,7 +70,7 @@ export default function PartnerPage() {
               List Your <span className="text-primary">Limo</span>
             </h1>
             <p className="text-xl text-grey-medium mb-8">
-              Join the LuxeridexDMV marketplace and start earning from your
+              Join the Luxeride marketplace and start earning from your
               luxury vehicle. Connect with customers across Washington D.C.,
               Maryland, and Virginia.
             </p>
@@ -220,9 +220,9 @@ export default function PartnerPage() {
           </motion.div>
 
           <RegistrationForm />
-          
 
-[Image of dashboard interface mockup]
+
+          [Image of dashboard interface mockup]
 
           <DashboardPreview />
         </div>

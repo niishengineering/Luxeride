@@ -1,10 +1,10 @@
 'use client';
 import { motion } from 'framer-motion';
-import { 
-  ShieldCheckIcon, 
-  UserCheckIcon, 
-  BadgeCheckIcon, 
-  AwardIcon 
+import {
+  ShieldCheckIcon,
+  UserCheckIcon,
+  BadgeCheckIcon,
+  AwardIcon
 } from 'lucide-react';
 
 
@@ -31,7 +31,7 @@ export function TrustSection({ features }: TrustSectionProps) {
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-grey-pastel mb-4">
-            Why Choose <span className="text-primary">LuxeridexDMV</span>
+            Why Choose <span className="text-primary">Luxeridex</span>
           </h2>
           <p className="text-grey-medium max-w-2xl mx-auto">
             We're committed to providing safe, reliable, and luxurious
@@ -80,7 +80,7 @@ export function TrustSection({ features }: TrustSectionProps) {
                 Ready to Experience Premium Transportation?
               </h3>
               <p className="text-grey-medium">
-                Join thousands of satisfied customers who trust LuxeridexDMV for
+                Join thousands of satisfied customers who trust Luxeridex for
                 their transportation needs.
               </p>
             </div>

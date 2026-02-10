@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import NextImage from "next/image";
 import {
   PhoneIcon,
   MailIcon,
@@ -22,12 +23,12 @@ const footerLinks = {
       path: "/logistics",
     },
     {
-      name: "Corporate Transport",
-      path: "/logistics",
+      name: "Events",
+      path: "/events",
     },
     {
-      name: "Wedding Limos",
-      path: "/marketplace",
+      name: "Parties",
+      path: "/parties",
     },
   ],
   company: [
@@ -44,8 +45,8 @@ const footerLinks = {
       path: "/contact",
     },
     {
-      name: "Marketplace",
-      path: "/marketplace",
+      name: "Mobility Equipment",
+      path: "/mobility-equipment",
     },
   ],
   legal: [
@@ -71,10 +72,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div className="space-y-6">
-            <Link href="/" className="inline-block">
-              <span className="text-2xl font-bold text-primary tracking-tight">
-                Luxeridex<span className="text-grey-pastel">DMV</span>
-              </span>
+            {/* Logo */}
+            <Link
+              href="/"
+              className="flex items-center  flex-shrink-0 group"
+            >
+              <img src="/logo.png" alt="Luxeridex Logo" className=" h-10 w-auto" />
             </Link>
             <p className="text-grey-medium text-sm leading-relaxed">
               Premium luxury transportation and reliable logistics services
@@ -181,7 +184,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-dark-lighter">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-grey-medium text-sm">
-              © {new Date().getFullYear()} LuxeridexDMV. All rights reserved.
+              © {new Date().getFullYear()} Luxeridex. All rights reserved.
             </p>
             <div className="flex space-x-6">
               {footerLinks.legal.map((link) => (

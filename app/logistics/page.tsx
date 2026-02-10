@@ -177,9 +177,9 @@ export default function LogisticsServicesPage() {
               everything from single package delivery to complex supply chain
               management.
             </p>
-            
 
-[Image of logistics supply chain process flowchart]
+
+            [Image of logistics supply chain process flowchart]
 
           </motion.div>
 
@@ -265,7 +265,7 @@ export default function LogisticsServicesPage() {
               Ready to Get <span className="text-primary">Started</span>?
             </h2>
             <p className="text-grey-medium mb-8 max-w-2xl mx-auto">
-              Contact us today for a free quote and discover how LuxeridexDMV can
+              Contact us today for a free quote and discover how Luxeridex can
               streamline your logistics operations.
             </p>
             <Button
