@@ -60,7 +60,7 @@ export function Navigation() {
     <>
       <nav
         className={`
-          fixed top-20 left-0 right-0 z-50
+          fixed top-29 left-0 right-0 z-50
           transition-all duration-300
           ${isScrolled
             ? "bg-black/95 backdrop-blur-md shadow-lg py-2"
