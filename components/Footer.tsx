@@ -73,11 +73,12 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-6">
             {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center  flex-shrink-0 group"
-            >
-              <img src="/logo.png" alt="Luxeridex Logo" className=" h-25 w-auto" />
+            <Link href="/" className="flex items-center  flex-shrink-0 group">
+              <img
+                src="/logo.png"
+                alt="Luxeridex Logo"
+                className=" h-25 w-auto"
+              />
             </Link>
             <p className="text-grey-medium text-sm leading-relaxed">
               Premium luxury transportation and reliable logistics services

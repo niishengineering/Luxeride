@@ -12,11 +12,12 @@ export function AppStoreBanner() {
           {/* Left: Download Message */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink min-w-0">
             {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center  flex-shrink-0 group"
-            >
-              <img src="/logo.png" alt="Luxeridex Logo" className=" h-25 w-auto" />
+            <Link href="/" className="flex items-center  flex-shrink-0 group">
+              <img
+                src="/logo.png"
+                alt="Luxeridex Logo"
+                className=" h-25 w-auto"
+              />
             </Link>
             <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 border border-primary/30 flex-shrink-0">
               <SmartphoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
