@@ -19,7 +19,7 @@ export default function RegisterPage() {
             Create Account
           </h1>
           <p className="text-grey-medium">
-            Join LuxeridexDMV for premium benefits
+            Join Luxeridex for premium benefits
           </p>
         </div>
 

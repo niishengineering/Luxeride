@@ -5,13 +5,14 @@ import { MovingQuoteForm } from '@/components/moving/MovingQuoteForm';
 import { Card } from '@/components/shared/Card';
 import { CheckCircleIcon, BoxIcon, TruckIcon, ShieldIcon } from 'lucide-react';
 import { MovingPageData } from '@/lib/api/moving';
+import { useRouter } from 'next/navigation';
 
 interface MovingServicesViewProps {
   data: MovingPageData;
 }
 
 export default function MovingServicesView({ data }: MovingServicesViewProps) {
-
+  const router = useRouter()
   const { hero } = data;
   const servicesSection = data.our_services[0]; 
 
@@ -157,6 +158,7 @@ export default function MovingServicesView({ data }: MovingServicesViewProps) {
                       ? 'bg-primary text-black'
                       : 'bg-dark-lighter text-grey-pastel hover:bg-primary hover:text-black'
                   }`}
+                  onClick={()=> router.push('/contact')}
                 >
                   Select Package
                 </button>

@@ -85,25 +85,18 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/luxridex"
                 className="p-2 rounded-lg bg-dark-lighter text-grey-medium hover:text-primary hover:bg-dark transition-colors"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/luxridexdmv/"
                 className="p-2 rounded-lg bg-dark-lighter text-grey-medium hover:text-primary hover:bg-dark transition-colors"
                 aria-label="Instagram"
               >
                 <InstagramIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="p-2 rounded-lg bg-dark-lighter text-grey-medium hover:text-primary hover:bg-dark transition-colors"
-                aria-label="Twitter"
-              >
-                <TwitterIcon className="w-5 h-5" />
               </a>
             </div>
           </div>

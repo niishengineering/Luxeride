@@ -6,6 +6,7 @@ import { PartyBusCard } from '@/components/parties/PartyBusCard';
 import { GroupBookingCalculator } from '@/components/parties/GroupBookingCalculator';
 import { Button } from '@/components/shared/Button';
 import { PartiesPageData } from '@/lib/api/parties';
+import { useRouter } from 'next/navigation';
 
 interface PartyViewProps {
   initialData: PartiesPageData;
@@ -13,6 +14,7 @@ interface PartyViewProps {
 
 export default function PartyView({ initialData }: PartyViewProps) {
   const { hero_section, party_fleet_section, parties_section } = initialData;
+  const router = useRouter();
   const packages = [
     { title: 'Bachelor/Bachelorette', price: '$800', desc: '4 hours, champagne included, VIP club entry' },
     { title: 'Birthday Bash', price: '$600', desc: '3 hours, decorations, soft drinks included' },
@@ -46,8 +48,7 @@ export default function PartyView({ initialData }: PartyViewProps) {
               {hero_section.subheading}
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button variant="primary" size="lg">View Fleet</Button>
-              <Button variant="outline" size="lg">Party Packages</Button>
+              <Button variant="primary" onClick={() => router.push('/limo-booking')} size="lg">View Fleet</Button>
             </div>
           </motion.div>
         </div>
@@ -57,7 +58,7 @@ export default function PartyView({ initialData }: PartyViewProps) {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-8">
-            
+
             {/* Dynamic Fleet List */}
             <div className="lg:col-span-2 space-y-8">
               <div className="flex justify-between items-end mb-6">
@@ -73,13 +74,13 @@ export default function PartyView({ initialData }: PartyViewProps) {
 
               {parties_section.map((bus) => (
                 <PartyBusCard
-                key={bus.page_id}
+                  key={bus.page_id}
                   id={bus.page_id}
                   name={bus.title}
-                  images={bus.image_url as string} 
+                  images={bus.image_url as string}
                   // Defaulting capacity/price since they aren't in your API response yet
-                  capacity={20} 
-                  pricePerHour={250} 
+                  capacity={20}
+                  pricePerHour={250}
                   rating={bus.rating}
                   description={bus.description}
                   onReserve={() => console.log('Reserve', bus.title)}
@@ -89,9 +90,9 @@ export default function PartyView({ initialData }: PartyViewProps) {
 
             {/* Sidebar */}
             <div className="lg:col-span-1 mt-24 space-y-8">
-                              <h3 className="text-2xl font-bold text-grey-pastel mb-5">
-                  Party Packages
-                </h3>
+              <h3 className="text-2xl font-bold text-grey-pastel mb-5">
+                Party Packages
+              </h3>
               <div className="bg-dark-charcoal rounded-xl p-6 border border-dark-lighter">
 
                 <div className="space-y-4">

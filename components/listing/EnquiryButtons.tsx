@@ -82,7 +82,7 @@ export function EnquiryButtons({
           </Button>}
 
         <p className="text-xs text-grey-medium text-center pt-2">
-          {isCompanyOwned ? 'Direct booking with LuxeridexDMV' : 'This is a marketplace listing. You will be connected with the vehicle owner.'}
+          {isCompanyOwned ? 'Direct booking with Luxeridex' : 'This is a marketplace listing. You will be connected with the vehicle owner.'}
         </p>
       </motion.div>
 
