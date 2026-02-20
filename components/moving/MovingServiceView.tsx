@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MovingQuoteForm } from '@/components/moving/MovingQuoteForm';
 import { Card } from '@/components/shared/Card';
 import { CheckCircleIcon, BoxIcon, TruckIcon, ShieldIcon } from 'lucide-react';
 import { MovingPageData } from '@/lib/api/moving';
 import { useRouter } from 'next/navigation';
+import { BookingModal } from '@/components/marketplace/BookingModal';
+import { ApiVehicle } from '@/components/marketplace/VehicleCard';
 
 interface MovingServicesViewProps {
   data: MovingPageData;
@@ -15,6 +18,26 @@ export default function MovingServicesView({ data }: MovingServicesViewProps) {
   const router = useRouter()
   const { hero } = data;
   const servicesSection = data.our_services[0]; 
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<ApiVehicle | null>(null);
+
+  const handleSelectPackage = (pkg: any) => {
+    const apiVehicle: ApiVehicle = {
+      page_id: Math.floor(Math.random() * 1000000), // temp id for package
+      title: 'Moving Services',
+      subheading: pkg.name,
+      image_url: "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?w=800&h=600&fit=crop",
+      image_title: pkg.name,
+      price: pkg.price.replace('From $', ''),
+      capacity: 'N/A',
+      rating: '5.0',
+      link: '#',
+      description: pkg.features.join(', ')
+    };
+    setSelectedPackage(apiVehicle);
+    setIsModalOpen(true);
+  };
 
   const bgImage = hero.background_image || "https://images.unsplash.com/photo-1603796846097-bee99e4a601f?w=1920&h=1080&fit=crop";
 
@@ -158,7 +181,7 @@ export default function MovingServicesView({ data }: MovingServicesViewProps) {
                       ? 'bg-primary text-black'
                       : 'bg-dark-lighter text-grey-pastel hover:bg-primary hover:text-black'
                   }`}
-                  onClick={()=> router.push('/contact')}
+                  onClick={() => handleSelectPackage(pkg)}
                 >
                   Select Package
                 </button>
@@ -167,6 +190,12 @@ export default function MovingServicesView({ data }: MovingServicesViewProps) {
           </div>
         </div>
       </section>
+
+      <BookingModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        vehicle={selectedPackage} 
+      />
     </main>
   );
 }
