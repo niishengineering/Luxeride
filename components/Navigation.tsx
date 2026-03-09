@@ -34,6 +34,10 @@ const navLinks = [
     path: "/moving-services",
   },
   {
+    name: "Loading",
+    path: "/loading",
+  },
+  {
     name: "Contact",
     path: "/contact",
   },
