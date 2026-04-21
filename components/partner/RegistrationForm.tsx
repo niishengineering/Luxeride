@@ -137,7 +137,7 @@ export function RegistrationForm() {
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          <Input label="Phone Number" type="tel" placeholder="(202) 555-1234" value={formData.phone} onChange={e => setFormData({
+          <Input label="Phone Number" type="tel" placeholder="(202)355-1410" value={formData.phone} onChange={e => setFormData({
             ...formData,
             phone: e.target.value
           })} required />

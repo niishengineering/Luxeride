@@ -46,13 +46,8 @@ export default function ContactView({ data }: ContactViewProps) {
     {
       icon: PhoneIcon,
       title: 'Phone',
-      details: [
-        contact_section?.phone?.primary || "N/A", 
-        contact_section?.phone?.alternative || ""
-      ].filter(Boolean),
-      action: contact_section?.phone?.primary 
-        ? `tel:${contact_section.phone.primary.replace(/\D/g,'')}` 
-        : undefined
+      details: ["(202)355-1410"],
+      action: `tel:2023551410`
     },
     {
       icon: MailIcon,
@@ -68,7 +63,7 @@ export default function ContactView({ data }: ContactViewProps) {
     {
       icon: MapPinIcon,
       title: 'Service Area',
-      details: [contact_section?.service_area?.address || "Washington D.C. Area"]
+      details: [contact_section?.service_area?.address || "2013 14th St NW, Washington, DC 20009, United States"]
     },
     {
       icon: ClockIcon,
@@ -242,7 +237,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <Input
                         label="Phone Number"
                         type="tel"
-                        placeholder="(202) 555-1234"
+                        placeholder="(202)355-1410"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         disabled={isLoading}
@@ -326,10 +321,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               <div className="text-center">
                 <MapPinIcon className="w-16 h-16 text-primary mx-auto mb-4" />
                 <p className="text-grey-pastel font-semibold">
-                  Washington D.C. Metropolitan Area
+                  2013 14th St NW, Washington, DC 20009
                 </p>
                 <p className="text-grey-medium text-sm">
-                  DC • Maryland • Virginia
+                  United States
                 </p>
                 {serviceArea?.map && serviceArea.map.length > 0 && (
                   <p className="text-xs text-grey-dark mt-2 mb-8">

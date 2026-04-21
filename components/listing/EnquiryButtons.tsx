@@ -125,7 +125,7 @@ export function EnquiryButtons({
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <Input label="Phone" type="tel" placeholder="(202) 555-1234" value={formData.phone} onChange={e => setFormData({
+              <Input label="Phone" type="tel" placeholder="(202)355-1410" value={formData.phone} onChange={e => setFormData({
             ...formData,
             phone: e.target.value
           })} required />

@@ -1,6 +1,9 @@
 'use client';
 import { motion } from 'framer-motion';
 import { BookingWidget } from '../booking/BookingWidget';
+import Link from 'next/link';
+import { Button } from '../shared/Button';
+import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '../shared/Modal';
 import { ListVehicleForm } from './ListVehicleForm';
@@ -28,29 +31,30 @@ export function HeroSection({hero}:HeroSectionProps) {
       {/* Content - Larger Booking Widget */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 w-full">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl"
         >
-          <BookingWidget />
-         <p className="mt-4 text-center md:text-left text-grey-medium text-sm">
-  Own a luxury vehicle?{' '}
-  <button
-    onClick={() => setIsListVehicleModalOpen(true)}
-    className="
-      inline
-      align-baseline
-      text-primary
-      underline
-      underline-offset-2
-      hover:text-primary/80
-      transition-colors
-    "
-  >
-    List it on our platform
-  </button>
-</p>
+          
+
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white leading-tight tracking-tighter mb-8 italic uppercase">
+            WE KEEP YOU <br />
+            <span className="text-primary">MOVING</span>
+          </h1>
+
+          <div className="flex flex-wrap gap-4">
+            <Link href="/limo-booking">
+              <Button 
+                variant="primary" 
+                size="lg" 
+                className="group rounded-full px-10 py-5 text-lg font-bold uppercase tracking-widest shadow-xl shadow-primary/20 transition-all hover:shadow-primary/40 hover:-translate-y-1"
+              >
+                Book Now
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+          </div>
         </motion.div>
       </div>
       <Modal

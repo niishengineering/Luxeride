@@ -64,7 +64,7 @@ export function Navigation() {
     <>
       <nav
         className={`
-          fixed top-29 left-0 right-0 z-50
+          fixed top-0 left-0 right-0 z-50
           transition-all duration-300
           ${isScrolled
             ? "bg-black/95 backdrop-blur-md shadow-lg py-2"
@@ -74,6 +74,16 @@ export function Navigation() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
+
+
+            {/* Logo */}
+            <Link href="/" className="flex items-center flex-shrink-0 group">
+              <img
+                src="/logo.png"
+                alt="Luxeridex Logo"
+                className="h-20 w-auto sm:h-24 lg:h-28"
+              />
+            </Link>
 
 
             {/* Desktop Navigation */}
@@ -97,6 +107,14 @@ export function Navigation() {
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center space-x-4">
+              <Link
+                href="/login"
+                className="hidden md:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-primary transition-colors flex-shrink-0"
+              >
+                <span className="text-xs sm:text-sm text-primary font-medium truncate">
+                  Log In
+                </span>
+              </Link>
               <Link href="/limo-booking">
                 <Button variant="primary" size="md">
                   Book Now

@@ -71,8 +71,7 @@ export default function PartnerPage() {
             </h1>
             <p className="text-xl text-grey-medium mb-8">
               Join the Luxeride marketplace and start earning from your
-              luxury vehicle. Connect with customers across Washington D.C.,
-              Maryland, and Virginia.
+              luxury vehicle. Connect with customers across 2013 14th St NW, Washington, DC 20009, United States.
             </p>
           </motion.div>
         </div>
