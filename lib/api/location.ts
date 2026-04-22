@@ -1,36 +1,63 @@
-// lib/api/locations.ts
 
 export interface LocationSuggestion {
-  display_name: string; 
-  lat: string;
-  lon: string;
+  address: string;
+  lat: number;
+  lng: number;
 }
 
-export async function fetchLocationSuggestions(query: string): Promise<string[]> {
+export async function fetchLocationSuggestions(query: string): Promise<LocationSuggestion[]> {
   if (!query || query.length < 3) return [];
 
   try {
-    // Nominatim requires a User-Agent header identifying your application
-    // We restrict results to the US (countrycodes=us) to keep it relevant
     const endpoint = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
       query
     )}&countrycodes=us&limit=5&addressdetails=1`;
 
     const res = await fetch(endpoint, {
       headers: {
-        'User-Agent': 'MyChauffeurApp/1.0 (contact@example.com)' // REPLACE with your app name/email
+        'User-Agent': 'Luxeride/1.0'
       }
     });
 
     if (!res.ok) return [];
 
-    const data: LocationSuggestion[] = await res.json();
+    const data: any[] = await res.json();
 
-    // Map the complex OpenStreetMap response to simple strings
-    return data.map((item) => item.display_name);
+    return data.map((item) => ({
+      address: item.display_name,
+      lat: parseFloat(item.lat),
+      lng: parseFloat(item.lon)
+    }));
     
   } catch (error) {
     console.error("Error fetching locations:", error);
     return [];
   }
 }
+
+export async function reverseGeocode(lat: number, lng: number): Promise<LocationSuggestion | null> {
+  try {
+    const endpoint = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`;
+
+    const res = await fetch(endpoint, {
+      headers: {
+        'User-Agent': 'Luxeride/1.0'
+      }
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (!data || !data.display_name) return null;
+
+    return {
+      address: data.display_name,
+      lat: parseFloat(data.lat),
+      lng: parseFloat(data.lon)
+    };
+  } catch (error) {
+    console.error("Error reverse geocoding:", error);
+    return null;
+  }
+}
+
