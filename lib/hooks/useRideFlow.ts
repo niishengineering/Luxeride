@@ -87,7 +87,7 @@ export function useRideFlow() {
     
     setIsLoading(true);
     try {
-      const response = await cancelTrip(activeTrip.id, "User cancelled from web app");
+      const response = await cancelTrip(activeTrip.id.toString(), "User cancelled from web app");
       if (response.status === 'success') {
         toast.success("Trip cancelled");
         reset();

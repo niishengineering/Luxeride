@@ -66,7 +66,7 @@ export default function ConfirmBookingPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-                    <img src={selectedVehicle.image || '/car-placeholder.png'} alt={selectedVehicle.title} className="w-12 h-12 object-contain" />
+                    <img src={selectedVehicle.image_url || '/car-placeholder.png'} alt={selectedVehicle.title} className="w-12 h-12 object-contain" />
                   </div>
                   <div>
                     <p className="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-1">Selected Vehicle</p>

@@ -20,11 +20,12 @@ export function TripTracking() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   const handlePayment = async () => {
-    if (activeTrip.payment_status === 'paid') return;
+    if (!activeTrip || activeTrip.payment_status === 'paid') return;
     setIsPaymentModalOpen(true);
   };
 
   const handlePaymentSuccess = () => {
+    if (!activeTrip) return;
     setIsPaymentModalOpen(false);
     // Refresh trip data to reflect paid status
     setActiveTrip({
@@ -137,8 +138,10 @@ export function TripTracking() {
           }
           
           // Adjust zoom to show both if it's the first time
-          if (data.routes[0].distance > 500) {
-             leafletMap.current.fitBounds(routePolyline.current.getBounds(), { padding: [50, 50] });
+          const map = leafletMap.current;
+          const polyline = routePolyline.current;
+          if (data.routes[0].distance > 500 && map && polyline) {
+             map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
           }
         }
       } catch (error) {
