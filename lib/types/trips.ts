@@ -61,5 +61,5 @@ export interface Trip {
     avatar?: string;
   };
   created_at: string;
-  payment_status?: 'paid' | 'unpaid' | 'pending';
+  payment_status?: 'paid' | 'unpaid' | 'pending' | 'authorized';
 }
