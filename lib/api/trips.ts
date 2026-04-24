@@ -133,3 +133,41 @@ export async function cancelTrip(tripId: string, reason: string) {
     return { status: "fail", message: "Failed to cancel trip" };
   }
 }
+
+export async function sendChatMessage(trip_id: string | number, text: string) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/chats/send`, {
+      method: "POST",
+      headers: await getAuthHeaders(),
+      body: JSON.stringify({ trip_id: Number(trip_id), text }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.status !== "success") {
+      return { status: "fail", message: data.message || "Failed to send message" };
+    }
+
+    return { status: "success", data };
+  } catch (error) {
+    return { status: "fail", message: "Failed to send message" };
+  }
+}
+
+export async function getChatMessageHistory(tripId: string | number) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/chats/trip/${tripId}/messages`, {
+      method: "GET",
+      headers: await getAuthHeaders(),
+      cache: "no-store",
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.status !== "success") {
+      return { status: "fail", message: data.message || "Failed to fetch chat history" };
+    }
+
+    return { status: "success", data: data.data };
+  } catch (error) {
+    return { status: "fail", message: "Failed to fetch chat history" };
+  }
+}

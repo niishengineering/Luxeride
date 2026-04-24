@@ -3,9 +3,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, User, Bot, Loader2 } from 'lucide-react';
-import { db, ref, push, onValue, serverTimestamp, listenToChat } from '@/lib/firebase';
+import { db, ref, onValue, listenToChat } from '@/lib/firebase';
 import { useBookingStore } from '@/lib/store/useBookingStore';
 import { useAuthStore } from '@/lib/store/useAuthStore';
+import { sendChatMessage, getChatMessageHistory } from '@/lib/api/trips';
 
 export function ChatWidget() {
   const { activeTrip } = useBookingStore();
@@ -18,8 +19,37 @@ export function ChatWidget() {
   useEffect(() => {
     if (!activeTrip?.id) return;
 
+    const loadHistory = async () => {
+      try {
+        const historyRes = await getChatMessageHistory(activeTrip.id);
+        if (historyRes.status === 'success' && historyRes.data) {
+          setMessages(prev => {
+            const allMsgs = [...prev, ...historyRes.data];
+            const unique = Array.from(new Map(allMsgs.map(m => [m.id || m.timestamp, m])).values());
+            return unique.sort((a, b) => {
+              const timeA = a.created_at ? new Date(a.created_at.replace(' ', 'T')).getTime() : (a.timestamp || 0);
+              const timeB = b.created_at ? new Date(b.created_at.replace(' ', 'T')).getTime() : (b.timestamp || 0);
+              return timeA - timeB;
+            });
+          });
+        }
+      } catch (e) {
+        console.error("Failed to load history", e);
+      }
+    };
+
+    loadHistory();
+
     const unsub = listenToChat(activeTrip.id.toString(), (msgs) => {
-      setMessages(msgs.sort((a, b) => a.timestamp - b.timestamp));
+      setMessages(prev => {
+        const allMsgs = [...prev, ...msgs];
+        const unique = Array.from(new Map(allMsgs.map(m => [m.id || m.timestamp, m])).values());
+        return unique.sort((a, b) => {
+          const timeA = a.created_at ? new Date(a.created_at.replace(' ', 'T')).getTime() : (a.timestamp || 0);
+          const timeB = b.created_at ? new Date(b.created_at.replace(' ', 'T')).getTime() : (b.timestamp || 0);
+          return timeA - timeB;
+        });
+      });
     });
 
     return () => unsub();
@@ -35,15 +65,12 @@ export function ChatWidget() {
 
     setIsLoading(true);
     try {
-      const chatRef = ref(db, `chats/trip_${activeTrip.id.toString()}/messages`);
-      await push(chatRef, {
-        text: newMessage,
-        senderId: user.ID,
-        senderName: user.first_name,
-        timestamp: serverTimestamp(),
-        type: 'customer'
-      });
-      setNewMessage("");
+      const response = await sendChatMessage(activeTrip.id, newMessage);
+      if (response.status === 'success') {
+        setNewMessage("");
+      } else {
+        console.error("Failed to send message:", response.message);
+      }
     } catch (error) {
        console.error("Chat error:", error);
     } finally {
@@ -54,7 +81,7 @@ export function ChatWidget() {
   if (!activeTrip) return null;
 
   return (
-    <div className="flex flex-col h-[400px] bg-dark-charcoal border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+    <div className="flex flex-col h-[500px] lg:h-[550px] bg-dark-charcoal border border-white/10 rounded-2xl overflow-hidden shadow-xl">
       <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
          <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
@@ -77,14 +104,14 @@ export function ChatWidget() {
           messages.map((msg) => (
             <div 
               key={msg.id} 
-              className={`flex ${msg.type === 'customer' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${(msg.type === 'customer' || msg.senderId === user?.ID || msg.sender_id === user?.ID) ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                msg.type === 'customer' 
+                (msg.type === 'customer' || msg.senderId === user?.ID || msg.sender_id === user?.ID) 
                   ? 'bg-primary text-black rounded-tr-none' 
                   : 'bg-white/5 text-grey-pastel border border-white/10 rounded-tl-none'
               }`}>
-                {msg.text}
+                {msg.text || msg.message_text}
               </div>
             </div>
           ))

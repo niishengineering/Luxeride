@@ -12,7 +12,7 @@ import L from 'leaflet';
 import { PaymentModal } from './PaymentModal';
 
 export function TripTracking() {
-  const { activeTrip, setActiveTrip, pickup, reset } = useBookingStore();
+  const { activeTrip, setActiveTrip, pickup, dropoff, reset } = useBookingStore();
   const [driverLocation, setDriverLocation] = useState<{ lat: number, lng: number, rotation: number } | null>(null);
   const [tripStatus, setTripStatus] = useState<string>('pending');
   const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
@@ -110,15 +110,23 @@ export function TripTracking() {
 
   // --- Routing Logic ---
   useEffect(() => {
-    const pLat = activeTrip?.pickup_lat || pickup?.lat || userLocation?.lat;
-    const pLng = activeTrip?.pickup_lng || pickup?.lng || userLocation?.lng;
+    let targetLat: number | undefined;
+    let targetLng: number | undefined;
 
-    if (!leafletMap.current || !driverLocation || !pLat) return;
+    if (tripStatus === 'ongoing') {
+      targetLat = activeTrip?.dropoff_lat || dropoff?.lat;
+      targetLng = activeTrip?.dropoff_lng || dropoff?.lng;
+    } else {
+      targetLat = activeTrip?.pickup_lat || pickup?.lat || userLocation?.lat;
+      targetLng = activeTrip?.pickup_lng || pickup?.lng || userLocation?.lng;
+    }
+
+    if (!leafletMap.current || !driverLocation || !targetLat || !targetLng) return;
 
     const fetchRoute = async () => {
       try {
         const response = await fetch(
-          `https://router.project-osrm.org/route/v1/driving/${driverLocation.lng},${driverLocation.lat};${pLng},${pLat}?overview=full&geometries=geojson`
+          `https://router.project-osrm.org/route/v1/driving/${driverLocation.lng},${driverLocation.lat};${targetLng},${targetLat}?overview=full&geometries=geojson`
         );
         const data = await response.json();
         
@@ -149,13 +157,13 @@ export function TripTracking() {
       }
     };
 
-    if (tripStatus === 'accepted' || tripStatus === 'arriving') {
+    if (tripStatus === 'accepted' || tripStatus === 'arriving' || tripStatus === 'ongoing') {
       fetchRoute();
     } else if (routePolyline.current) {
       routePolyline.current.remove();
       routePolyline.current = null;
     }
-  }, [driverLocation, activeTrip?.pickup_lat, tripStatus]);
+  }, [driverLocation, activeTrip?.pickup_lat, activeTrip?.dropoff_lat, tripStatus, pickup?.lat, dropoff?.lat, userLocation?.lat]);
 
   // --- Real-time Listeners ---
   useEffect(() => {
@@ -265,18 +273,18 @@ export function TripTracking() {
                </div>
                 <button 
                   onClick={handlePayment}
-                  disabled={isPaying}
+                  disabled={isPaying || activeTrip.payment_status === 'paid' || activeTrip.payment_status === 'authorized'}
                   className={`p-4 rounded-2xl border transition-all text-left w-full ${
-                    activeTrip.payment_status === 'paid' 
-                      ? 'bg-green-500/10 border-green-500/20' 
+                    (activeTrip.payment_status === 'paid' || activeTrip.payment_status === 'authorized')
+                      ? 'bg-green-500/10 border-green-500/20 opacity-80' 
                       : 'bg-primary/10 border-primary/20 hover:bg-primary/20 cursor-pointer'
                   }`}
                 >
                    <p className="text-[10px] uppercase font-bold text-grey-dark tracking-widest mb-1">Payment Status</p>
                    <p className={`text-sm font-medium flex items-center ${
-                     activeTrip.payment_status === 'paid' ? 'text-green-500' : 'text-primary'
+                     (activeTrip.payment_status === 'paid' || activeTrip.payment_status === 'authorized') ? 'text-green-500' : 'text-primary'
                    }`}>
-                      {activeTrip.payment_status === 'paid' ? (
+                      {(activeTrip.payment_status === 'paid' || activeTrip.payment_status === 'authorized') ? (
                         <>
                           <Shield className="w-3.5 h-3.5 mr-1.5" />
                           Paid Securely

@@ -53,7 +53,7 @@ export default function OngoingTripPage() {
 
   return (
     <main className="min-h-screen bg-dark pt-32 pb-20">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
            <button 
              onClick={() => router.push('/')}
@@ -68,11 +68,11 @@ export default function OngoingTripPage() {
            </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8 items-stretch">
           <div className="lg:col-span-2">
             <TripTracking />
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 h-full">
             <ChatWidget />
           </div>
         </div>

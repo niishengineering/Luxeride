@@ -43,13 +43,13 @@ export function Navigation() {
         className={`
           fixed top-0 left-0 right-0 z-50 transition-all duration-300
           ${isScrolled 
-            ? "bg-black/95 backdrop-blur-md shadow-lg" 
+            ? "bg-black/95 backdrop-blur-md shadow-lg border-b border-white/5" 
             : "bg-transparent"
           }
         `}
       >
-        {/* Row 1: Logo, Menu & Auth - Always has background */}
-        <div className="bg-black/95 backdrop-blur-md border-b border-white/5">
+        {/* Row 1: Logo, Menu & Auth */}
+        <div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 sm:h-20">
               {/* Logo */}
@@ -57,7 +57,7 @@ export function Navigation() {
                 <img
                   src="/logo.png"
                   alt="Luxeridex Logo"
-                  className="h-12 sm:h-16 w-auto transition-all duration-300"
+                  className="h-16 sm:h-24 w-auto transition-all duration-500 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:scale-110 active:scale-95"
                 />
               </Link>
 
@@ -83,8 +83,13 @@ export function Navigation() {
               {/* Desktop Auth */}
               <div className="hidden sm:flex items-center space-x-4">
                 <Link href="/login">
-                  <Button variant="primary" size="sm" className="px-6 font-bold">
+                  <Button className="px-5 py-2 font-bold bg-[#1A1A1B] text-[#D4AF37] hover:bg-black border border-white/5 rounded-[14px] transition-all duration-300 shadow-sm" size="sm">
                     Log In
+                  </Button>
+                </Link>
+                <Link href="/booking">
+                  <Button variant="primary" size="sm" className="px-7 py-2.5 font-bold text-white rounded-2xl shadow-xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-300">
+                    Book Now
                   </Button>
                 </Link>
                 
@@ -112,57 +117,6 @@ export function Navigation() {
           </div>
         </div>
 
-        {/* Row 2: App Download Buttons */}
-        <div className="hidden sm:block">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`
-              flex items-center justify-end space-x-4 transition-all duration-500
-              ${isScrolledDeep ? "py-2" : "py-4"}
-            `}>
-              <a
-                href="#"
-                className={`
-                  flex items-center gap-2 rounded-lg border transition-all duration-300 group
-                  ${isScrolledDeep ? "p-2" : "px-4 py-2"}
-                  ${isScrolled 
-                    ? "bg-black border-white/10" 
-                    : "bg-black/20 border-white/5 backdrop-blur-sm"
-                  }
-                  hover:border-primary/50
-                `}
-              >
-                <AppleIcon className={`transition-all duration-300 ${isScrolledDeep ? "w-5 h-5" : "w-4 h-4"} text-white group-hover:text-primary`} />
-                {!isScrolledDeep && (
-                  <div className="text-left">
-                    <div className="text-[10px] text-gray-500 leading-none">Download on the</div>
-                    <div className="text-xs font-semibold text-white leading-tight">App Store</div>
-                  </div>
-                )}
-              </a>
-
-              <a
-                href="#"
-                className={`
-                  flex items-center gap-2 rounded-lg border transition-all duration-300 group
-                  ${isScrolledDeep ? "p-2" : "px-4 py-2"}
-                  ${isScrolled 
-                    ? "bg-black border-white/10" 
-                    : "bg-black/20 border-white/5 backdrop-blur-sm"
-                  }
-                  hover:border-primary/50
-                `}
-              >
-                <SmartphoneIcon className={`transition-all duration-300 ${isScrolledDeep ? "w-5 h-5" : "w-4 h-4"} text-white group-hover:text-primary`} />
-                {!isScrolledDeep && (
-                  <div className="text-left">
-                    <div className="text-[10px] text-gray-500 leading-none">GET IT ON</div>
-                    <div className="text-xs font-semibold text-white leading-tight">Google Play</div>
-                  </div>
-                )}
-              </a>
-            </div>
-          </div>
-        </div>
       </header>
 
       {/* Mobile Menu Backdrop */}
@@ -192,7 +146,7 @@ export function Navigation() {
               ))}
               <div className="pt-6 border-t border-white/10 flex flex-col gap-4">
                 <Link href="/login">
-                  <Button variant="primary" size="lg" fullWidth>Log In</Button>
+                  <Button className="bg-[#1A1A1B] text-[#D4AF37] border border-white/5 rounded-[14px]" size="lg" fullWidth>Log In</Button>
                 </Link>
                 <div className="flex justify-center gap-4 py-4">
                    <AppleIcon className="w-6 h-6 text-gray-400" />

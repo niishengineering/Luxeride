@@ -5,10 +5,27 @@ import { useState } from 'react';
 import { Modal } from '../shared/Modal';
 import { ListVehicleForm } from './ListVehicleForm';
 import { RideFlow } from '../booking/RideFlow';
-import { TripTracking } from '../booking/TripTracking';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { Button } from '../Button';
+
+const TripTracking = dynamic(() => import('../booking/TripTracking').then(mod => mod.TripTracking), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[450px] w-full rounded-3xl bg-dark-charcoal/50 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+      <div className="flex flex-col items-center gap-4 text-center p-8">
+        <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+        <div className="space-y-2">
+          <p className="text-white font-bold tracking-tight">Initializing Map</p>
+          <p className="text-xs text-grey-medium">Connecting to secure GPS network...</p>
+        </div>
+      </div>
+    </div>
+  )
+});
 import { useBookingStore } from '@/lib/store/useBookingStore';
 import { useAuthStore } from '@/lib/store/useAuthStore';
-import { Sparkles, Star } from 'lucide-react';
+import { Sparkles, Star, ArrowRight } from 'lucide-react';
 
 type HeroSectionProps = {
   hero: {
@@ -18,21 +35,22 @@ type HeroSectionProps = {
 
 export function HeroSection({ hero }: HeroSectionProps) {
   const [isListVehicleModalOpen, setIsListVehicleModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { activeTrip, step } = useBookingStore();
   const { user } = useAuthStore();
 
   return (
     <section className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden">
       {/* Background with advanced overlays */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black">
         <img
           src={hero.background_image || "https://images.unsplash.com/photo-1563720360172-67b8f3dce741?w=1920&h=1080&fit=crop&q=80"}
           alt="Luxury Ride"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-90"
         />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+        {/* Subtle overlay */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -45,66 +63,32 @@ export function HeroSection({ hero }: HeroSectionProps) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center lg:text-left space-y-8"
           >
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span className="text-[10px] uppercase font-bold text-primary tracking-widest">The Ultimate Travel Experience</span>
-            </div>
-            
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-bold text-grey-pastel leading-tight tracking-tight">
-                Luxury <span className="text-gradient">Redefined</span>,<br/>
-                Every Journey.
+            <div className="space-y-6">
+              <h1 className="text-4xl md:text-6xl lg:text-[80px] font-black italic text-white leading-tight tracking-tight drop-shadow-lg">
+                WE KEEP YOU<br/>
+                <span className="text-primary drop-shadow-md">MOVING</span>
               </h1>
-              <p className="text-lg text-grey-medium max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium">
-                Experience the pinnacle of sophisticated travel with Luxeride. 
-                Premium vehicles, professional chauffeurs, and real-time precision.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-               <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-black bg-dark-lighter overflow-hidden">
-                       <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
-                    </div>
-                  ))}
-                  <div className="w-10 h-10 rounded-full border-2 border-black bg-primary flex items-center justify-center text-black text-xs font-bold">
-                    +2k
-                  </div>
-               </div>
-               <div className="text-left">
-                  <div className="flex text-primary">
-                     {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-primary" />)}
-                  </div>
-                  <p className="text-[10px] text-grey-medium font-bold uppercase tracking-wider">Trusted by 2,000+ Premium Travelers</p>
-               </div>
-            </div>
-
-            <div className="pt-4 border-t border-white/5 inline-block">
-               <p className="text-grey-medium text-sm">
-                Own a luxury vehicle?{' '}
-                <button
-                  onClick={() => setIsListVehicleModalOpen(true)}
-                  className="text-primary font-bold hover:underline underline-offset-4 decoration-primary/50 transition-all"
+              
+              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                <Link href="/limo-booking">
+                  <Button 
+                    variant="primary" 
+                    size="lg" 
+                    className="px-8 py-4 font-bold text-white text-lg flex items-center justify-center gap-2 uppercase tracking-wide w-full sm:w-auto"
+                  >
+                    Book Now <ArrowRight className="w-5 h-5" />
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={() => setIsBookingModalOpen(true)}
+                  variant="outline" 
+                  size="lg" 
+                  className="px-8 py-4 font-bold text-white border-white/20 hover:bg-white/10 text-lg flex items-center justify-center gap-2 uppercase tracking-wide w-full sm:w-auto backdrop-blur-sm"
                 >
-                  List it on our platform
-                </button>
-              </p>
+                  Request a Ride
+                </Button>
+              </div>
             </div>
-          </motion.div>
-
-          {/* Right Column: Dynamic Booking Interface */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full"
-          >
-            {activeTrip && step === 4 ? (
-              <TripTracking />
-            ) : (
-              <RideFlow />
-            )}
           </motion.div>
         </div>
       </div>
@@ -117,6 +101,16 @@ export function HeroSection({ hero }: HeroSectionProps) {
         size="md"
       >
         <ListVehicleForm onSuccess={() => setIsListVehicleModalOpen(false)} />
+      </Modal>
+
+      {/* Modal for Booking Ride */}
+      <Modal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        title="Request a Ride"
+        size="md"
+      >
+        <RideFlow />
       </Modal>
     </section>
   );

@@ -64,7 +64,7 @@ export function ServiceSplit({ services }: ServiceSplitProps) {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-grey-pastel">
-                  Limo Rentals
+                  Book a Limo Ride
                 </h3>
                 <p className="text-grey-medium">
                   Premium vehicles for every occasion

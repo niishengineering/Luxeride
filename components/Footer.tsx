@@ -15,7 +15,7 @@ import {
 const footerLinks = {
   services: [
     {
-      name: "Limo Rentals",
+      name: "Book a Limo Ride",
       path: "/limo-booking",
     },
     {
@@ -149,16 +149,16 @@ export function Footer() {
               <li className="flex items-start space-x-3">
                 <MapPinIcon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-grey-medium text-sm">
-                  Washington D.C., Maryland & Virginia
+                  2013 14th St NW, Washington, DC 20009, United States
                 </span>
               </li>
               <li className="flex items-center space-x-3">
                 <PhoneIcon className="w-5 h-5 text-primary flex-shrink-0" />
                 <a
-                  href="tel:+12025551234"
+                  href="tel:+12023551410"
                   className="text-grey-medium hover:text-primary transition-colors text-sm"
                 >
-                  (202) 555-1234
+                  (202) 355-1410
                 </a>
               </li>
               <li className="flex items-center space-x-3">
