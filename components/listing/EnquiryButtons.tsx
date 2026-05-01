@@ -4,6 +4,8 @@ import { Button } from '../shared/Button';
 import { Modal } from '../shared/Modal';
 import { Input } from '../shared/Input';
 import { CalendarCheckIcon, MessageSquareIcon, PhoneIcon, CheckCircleIcon } from 'lucide-react';
+import { useBookingStore } from '@/lib/store/useBookingStore';
+
 type EnquiryButtonsProps = {
   isCompanyOwned: boolean;
   vehicleName: string;
@@ -12,6 +14,7 @@ export function EnquiryButtons({
   isCompanyOwned,
   vehicleName
 }: EnquiryButtonsProps) {
+  const { setModalOpen } = useBookingStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'availability' | 'booking' | 'contact'>('availability');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -73,7 +76,7 @@ export function EnquiryButtons({
           Check Availability
         </Button>
 
-        {isCompanyOwned ? <Button variant="outline" fullWidth size="lg" onClick={() => openModal('booking')}>
+        {isCompanyOwned ? <Button variant="outline" fullWidth size="lg" onClick={() => setModalOpen(true)}>
             <PhoneIcon className="w-5 h-5 mr-2" />
             Book Now
           </Button> : <Button variant="outline" fullWidth size="lg" onClick={() => openModal('contact')}>

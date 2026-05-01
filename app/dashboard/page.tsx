@@ -22,6 +22,7 @@ import { logoutAction } from '@/lib/api/auth';
 import { getBookingByEmail } from '@/lib/api/booking';
 import { uploadProfileImageAction } from '@/lib/api/user'; 
 import AccountSettings from '@/components/user/AccountSettings';
+import PaymentMethods from '@/components/user/PaymentMethods';
 import { ReviewForm } from '@/components/user/ReviewForm';
 import { toast } from 'sonner';
 
@@ -38,7 +39,7 @@ export default function UserDashboardPage() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'bookings' | 'settings'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'settings' | 'payments'>('bookings');
   const [isUploading, setIsUploading] = useState(false);
   
   const [bookings, setBookings] = useState<any[]>([]);
@@ -200,6 +201,7 @@ export default function UserDashboardPage() {
               <nav className="space-y-1">
                 {[
                   { id: 'bookings', label: 'My Bookings' }, 
+                  { id: 'payments', label: 'Payment Methods' },
                   { id: 'settings', label: 'Account Settings' }
                 ].map((item) => (
                   <button
@@ -344,6 +346,8 @@ export default function UserDashboardPage() {
                     </>
                   )}
                 </div>
+              ) : activeTab === 'payments' ? (
+                <PaymentMethods />
               ) : (
                 <AccountSettings />
               )}

@@ -1,12 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Modal } from '../shared/Modal';
-import { ListVehicleForm } from './ListVehicleForm';
-import { RideFlow } from '../booking/RideFlow';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { Button } from '../Button';
 
 const TripTracking = dynamic(() => import('../booking/TripTracking').then(mod => mod.TripTracking), {
@@ -34,9 +29,7 @@ type HeroSectionProps = {
 };
 
 export function HeroSection({ hero }: HeroSectionProps) {
-  const [isListVehicleModalOpen, setIsListVehicleModalOpen] = useState(false);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const { activeTrip, step } = useBookingStore();
+  const { setModalOpen } = useBookingStore();
   const { user } = useAuthStore();
 
   return (
@@ -44,7 +37,8 @@ export function HeroSection({ hero }: HeroSectionProps) {
       {/* Background with advanced overlays */}
       <div className="absolute inset-0 z-0 bg-black">
         <img
-          src={hero.background_image || "https://images.unsplash.com/photo-1563720360172-67b8f3dce741?w=1920&h=1080&fit=crop&q=80"}
+           src={"/lp.png"}
+        //  src={hero.background_image || "https://images.unsplash.com/photo-1563720360172-67b8f3dce741?w=1920&h=1080&fit=crop&q=80"}
           alt="Luxury Ride"
           className="w-full h-full object-cover opacity-90"
         />
@@ -64,54 +58,25 @@ export function HeroSection({ hero }: HeroSectionProps) {
             className="text-center lg:text-left space-y-8"
           >
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-6xl lg:text-[80px] font-black italic text-white leading-tight tracking-tight drop-shadow-lg">
+              <h1 className="text-3xl md:text-4xl lg:text-[65px] font-black italic text-white leading-tight tracking-tight drop-shadow-lg">
                 WE KEEP YOU<br/>
                 <span className="text-primary drop-shadow-md">MOVING</span>
               </h1>
               
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <Link href="/limo-booking">
-                  <Button 
-                    variant="primary" 
-                    size="lg" 
-                    className="px-8 py-4 font-bold text-white text-lg flex items-center justify-center gap-2 uppercase tracking-wide w-full sm:w-auto"
-                  >
-                    Book Now <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </Link>
                 <Button 
-                  onClick={() => setIsBookingModalOpen(true)}
-                  variant="outline" 
+                  onClick={() => setModalOpen(true)}
+                  variant="primary" 
                   size="lg" 
-                  className="px-8 py-4 font-bold text-white border-white/20 hover:bg-white/10 text-lg flex items-center justify-center gap-2 uppercase tracking-wide w-full sm:w-auto backdrop-blur-sm"
+                  className="px-12 py-5 font-bold text-black text-xl flex items-center justify-center gap-3 uppercase tracking-widest w-full sm:w-auto shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:scale-105 transition-transform"
                 >
-                  Request a Ride
+                  Book Now <ArrowRight className="w-6 h-6" />
                 </Button>
               </div>
             </div>
           </motion.div>
         </div>
       </div>
-
-      {/* Modal for Listing Vehicle */}
-      <Modal
-        isOpen={isListVehicleModalOpen}
-        onClose={() => setIsListVehicleModalOpen(false)}
-        title="List Your Vehicle"
-        size="md"
-      >
-        <ListVehicleForm onSuccess={() => setIsListVehicleModalOpen(false)} />
-      </Modal>
-
-      {/* Modal for Booking Ride */}
-      <Modal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        title="Request a Ride"
-        size="md"
-      >
-        <RideFlow />
-      </Modal>
     </section>
   );
-}
+}

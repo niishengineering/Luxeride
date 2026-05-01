@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MenuIcon, XIcon, AppleIcon, SmartphoneIcon } from "lucide-react";
 import { Button } from "./Button";
+import { useBookingStore } from "@/lib/store/useBookingStore";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -19,6 +20,7 @@ const navLinks = [
 ];
 
 export function Navigation() {
+  const { setModalOpen } = useBookingStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrolledDeep, setIsScrolledDeep] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -87,11 +89,14 @@ export function Navigation() {
                     Log In
                   </Button>
                 </Link>
-                <Link href="/booking">
-                  <Button variant="primary" size="sm" className="px-7 py-2.5 font-bold text-white rounded-2xl shadow-xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-300">
-                    Book Now
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={() => setModalOpen(true)}
+                  variant="primary" 
+                  size="sm" 
+                  className="px-7 py-2.5 font-bold text-white rounded-2xl shadow-xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-300"
+                >
+                  Book Now
+                </Button>
                 
                 {/* Mobile Hamburger (visible on mobile only) */}
                 <div className="lg:hidden ml-2">

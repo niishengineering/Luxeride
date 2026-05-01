@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
@@ -10,11 +8,20 @@ import {
 } from '@stripe/react-stripe-js';
 import { Modal } from '@/components/shared/Modal';
 import { Button } from '@/components/shared/Button';
-import { Shield, Loader2, CreditCard, Lock } from 'lucide-react';
-import { createPaymentIntent, verifyPayment, confirmTrip } from '@/lib/api/payments';
+import { Shield, Loader2, CreditCard, Lock, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
+import { createPaymentIntent, verifyPayment, confirmTrip, getSavedCards } from '@/lib/api/payments';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+interface SavedCard {
+  id: string;
+  brand: string;
+  last4: string;
+  exp_month: number;
+  exp_year: number;
+}
 
 interface CheckoutFormProps {
   tripId: string;
@@ -28,64 +35,78 @@ function CheckoutForm({ tripId, amount, onSuccess, onCancel }: CheckoutFormProps
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+  const [selectedCardId, setSelectedCardId] = useState<string | 'new'>('new');
+  const [saveCard, setSaveCard] = useState(false);
+  const [isLoadingCards, setIsLoadingCards] = useState(true);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      setIsLoadingCards(true);
+      const res = await getSavedCards();
+      if (res.status === 'success' && res.data.length > 0) {
+        setSavedCards(res.data);
+        setSelectedCardId(res.data[0].id);
+      }
+      setIsLoadingCards(false);
+    };
+    fetchCards();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!stripe || !elements) return;
+    if (!stripe || (selectedCardId === 'new' && !elements)) return;
 
     setIsProcessing(true);
     setError(null);
 
     try {
-      // 1. Create Payment Intent
-      const intentRes = await createPaymentIntent(tripId.toString());
-      console.log("[Payment] Intent created:", intentRes);
-      if (intentRes.status !== 'success') {
-        throw new Error(intentRes.message);
-      }
-
-      // 2. Confirm Payment with Stripe
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) throw new Error("Card element not found");
-
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-        intentRes.client_secret,
-        {
-          payment_method: {
-            card: cardElement,
-          },
-        }
+      // 1. Create/Initialize Payment Intent
+      const intentRes = await createPaymentIntent(
+        tripId.toString(), 
+        selectedCardId === 'new' ? saveCard : false,
+        selectedCardId !== 'new' ? selectedCardId : undefined
       );
 
-      console.log("[Payment] Stripe result status:", paymentIntent?.status);
-      console.log("[Payment] Full Stripe result:", { stripeError, paymentIntent });
+      if (intentRes.status !== 'success') throw new Error(intentRes.message);
 
-      if (stripeError) {
-        throw new Error(stripeError.message);
+      let paymentIntent;
+
+      if (selectedCardId === 'new') {
+        // Flow B: Confirm with New Card
+        const cardElement = elements!.getElement(CardElement);
+        if (!cardElement) throw new Error("Card element not found");
+
+        const result = await stripe.confirmCardPayment(intentRes.client_secret, {
+          payment_method: { card: cardElement },
+        });
+        
+        if (result.error) throw new Error(result.error.message);
+        paymentIntent = result.paymentIntent;
+      } else {
+        // Flow A: One-Click (might require SCA)
+        if (intentRes.client_secret) {
+          // SCA Required
+          const result = await stripe.confirmCardPayment(intentRes.client_secret);
+          if (result.error) throw new Error(result.error.message);
+          paymentIntent = result.paymentIntent;
+        } else {
+          // Success directly (Authorized)
+          paymentIntent = { id: intentRes.payment_intent_id, status: 'requires_capture' };
+        }
       }
 
       if (paymentIntent && (paymentIntent.status === 'succeeded' || paymentIntent.status === 'requires_capture')) {
-        console.log("[Payment] Stripe confirmation successful:", paymentIntent.id);
-        
-        // 3. Verify on Backend
-        console.log("[Payment] Initiating verification with backend...", { paymentIntentId: paymentIntent.id, tripId: tripId.toString() });
+        // 3. Verify and Confirm
         const verifyRes = await verifyPayment(paymentIntent.id, tripId.toString());
-        console.log("[Payment] Verification response from backend:", verifyRes);
-        
-        if (verifyRes.status === 'success') {
-          // 4. Final Trip Confirmation
-          const confirmRes = await confirmTrip(tripId.toString());
-          console.log("[Payment] Trip confirmation:", confirmRes);
-          
-          if (confirmRes.status === 'success') {
-            toast.success("Payment successful & Trip confirmed!");
-            onSuccess();
-          } else {
-            throw new Error(confirmRes.message);
-          }
-        } else {
-          throw new Error(verifyRes.message);
-        }
+        if (verifyRes.status !== 'success') throw new Error(verifyRes.message);
+
+        const confirmRes = await confirmTrip(tripId.toString());
+        if (confirmRes.status !== 'success') throw new Error(confirmRes.message);
+
+        toast.success("Payment successful!");
+        onSuccess();
       }
     } catch (err: any) {
       setError(err.message);
@@ -97,39 +118,107 @@ function CheckoutForm({ tripId, amount, onSuccess, onCancel }: CheckoutFormProps
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-        <label className="text-xs font-bold text-grey-dark uppercase tracking-widest mb-3 block">
-          Card Details
-        </label>
-        <div className="p-4 bg-dark-lighter rounded-lg border border-white/5">
-          <CardElement 
-            options={{
-              hidePostalCode: true, // Resolves the "postal code incomplete" error
-              style: {
-                base: {
-                  fontSize: '16px',
-                  color: '#F5F5F5',
-                  fontFamily: 'Geist, sans-serif',
-                  '::placeholder': {
-                    color: '#666666',
-                  },
-                },
-                invalid: {
-                  color: '#ef4444',
-                },
-              },
-            }}
-          />
+      {/* Saved Cards Selection */}
+      {!isLoadingCards && savedCards.length > 0 && (
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-grey-dark uppercase tracking-widest">
+            Select Payment Method
+          </label>
+          <div className="grid gap-2">
+            {savedCards.map((card) => (
+              <div 
+                key={card.id}
+                onClick={() => setSelectedCardId(card.id)}
+                className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                  selectedCardId === card.id 
+                    ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.1)]' 
+                    : 'bg-white/5 border-white/10 hover:border-white/20'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg ${selectedCardId === card.id ? 'bg-primary/20' : 'bg-dark-lighter'}`}>
+                    <CreditCard className={`w-4 h-4 ${selectedCardId === card.id ? 'text-primary' : 'text-grey-dark'}`} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-grey-pastel uppercase">
+                      {card.brand} •••• {card.last4}
+                    </p>
+                    <p className="text-[10px] text-grey-medium">Expires {card.exp_month}/{card.exp_year}</p>
+                  </div>
+                </div>
+                {selectedCardId === card.id && <CheckCircle2 className="w-4 h-4 text-primary" />}
+              </div>
+            ))}
+            <div 
+              onClick={() => setSelectedCardId('new')}
+              className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
+                selectedCardId === 'new' 
+                  ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(212,175,55,0.1)]' 
+                  : 'bg-white/5 border-white/10 hover:border-white/20'
+              }`}
+            >
+              <div className="flex items-center space-x-3">
+                <div className={`p-2 rounded-lg ${selectedCardId === 'new' ? 'bg-primary/20' : 'bg-dark-lighter'}`}>
+                  <Plus className={`w-4 h-4 ${selectedCardId === 'new' ? 'text-primary' : 'text-grey-dark'}`} />
+                </div>
+                <p className="text-xs font-bold text-grey-pastel uppercase">Use a New Card</p>
+              </div>
+              {selectedCardId === 'new' && <CheckCircle2 className="w-4 h-4 text-primary" />}
+            </div>
+          </div>
         </div>
-        <p className="text-[10px] text-grey-dark mt-3 italic">
-          * Securely encrypted via Stripe SSL. Your card data never touches our servers.
-        </p>
-      </div>
+      )}
+
+      {/* New Card Input */}
+      <AnimatePresence>
+        {selectedCardId === 'new' && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="space-y-4 overflow-hidden"
+          >
+            <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+              <label className="text-[10px] font-bold text-grey-dark uppercase tracking-widest mb-3 block">
+                Card Details
+              </label>
+              <div className="p-4 bg-dark-lighter rounded-lg border border-white/5">
+                <CardElement 
+                  options={{
+                    hidePostalCode: true,
+                    style: {
+                      base: {
+                        fontSize: '16px',
+                        color: '#F5F5F5',
+                        '::placeholder': { color: '#666666' },
+                      },
+                      invalid: { color: '#ef4444' },
+                    },
+                  }}
+                />
+              </div>
+              <div className="mt-4 flex items-center space-x-2">
+                <input 
+                  type="checkbox" 
+                  id="save-card" 
+                  checked={saveCard}
+                  onChange={(e) => setSaveCard(e.target.checked)}
+                  className="w-4 h-4 rounded border-white/10 bg-white/5 text-primary focus:ring-primary/20"
+                />
+                <label htmlFor="save-card" className="text-xs text-grey-medium cursor-pointer">
+                  Save this card for future bookings
+                </label>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {error && (
-        <p className="text-red-500 text-xs font-medium bg-red-500/10 p-3 rounded-lg border border-red-500/20">
+        <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-xs">
+          <AlertCircle className="w-4 h-4" />
           {error}
-        </p>
+        </div>
       )}
 
       <div className="flex items-center justify-between p-4 bg-primary/5 rounded-xl border border-primary/10">
@@ -158,7 +247,7 @@ function CheckoutForm({ tripId, amount, onSuccess, onCancel }: CheckoutFormProps
         <Button 
           type="submit" 
           className="flex-1 bg-primary text-black hover:bg-primary/90" 
-          disabled={!stripe || isProcessing}
+          disabled={!stripe || isProcessing || (selectedCardId === 'new' && isLoadingCards)}
         >
           {isProcessing ? (
             <>
@@ -168,7 +257,7 @@ function CheckoutForm({ tripId, amount, onSuccess, onCancel }: CheckoutFormProps
           ) : (
             <>
               <Shield className="w-4 h-4 mr-2" />
-              Pay Now
+              {selectedCardId === 'new' ? 'Pay Now' : 'Confirm Payment'}
             </>
           )}
         </Button>
@@ -176,6 +265,9 @@ function CheckoutForm({ tripId, amount, onSuccess, onCancel }: CheckoutFormProps
     </form>
   );
 }
+
+// Add Plus icon import to Lucide
+import { Plus } from 'lucide-react';
 
 export function PaymentModal({ 
   isOpen, 

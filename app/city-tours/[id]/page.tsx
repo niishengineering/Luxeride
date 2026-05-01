@@ -18,15 +18,16 @@ import {
 } from 'lucide-react';
 
 import { getTourById, CityTour } from '@/lib/api/tours';
+import { useBookingStore } from '@/lib/store/useBookingStore';
 
 export default function TourDetailPage() {
+  const { setModalOpen } = useBookingStore();
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<CityTour | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,14 +122,11 @@ export default function TourDetailPage() {
           {/* RIGHT SIDEBAR */}
           <div className="lg:col-span-1">
             <div className="sticky top-28">
-              <BookingCard price={data.price} onBook={() => setIsModalOpen(true)} />
+              <BookingCard price={data.price} />
             </div>
           </div>
         </div>
       </div>
-
-
-      <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} vehicle={data} />
     </main>
   );
 }
@@ -157,7 +155,8 @@ function DetailStat({ icon, label, value }: { icon: React.ReactNode, label: stri
   );
 }
 
-function BookingCard({ price, onBook }: { price: string, onBook: () => void }) {
+function BookingCard({ price }: { price: string }) {
+  const { setModalOpen } = useBookingStore();
   return (
     <Card className="bg-dark-charcoal border-primary/30 shadow-2xl overflow-hidden relative">
       <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
@@ -169,7 +168,7 @@ function BookingCard({ price, onBook }: { price: string, onBook: () => void }) {
             <span className="text-sm text-grey-medium">/ per person</span>
           </div>
         </div>
-        <Button variant="primary" size="lg" fullWidth className="h-14" onClick={onBook}>
+        <Button variant="primary" size="lg" fullWidth className="h-14" onClick={() => setModalOpen(true)}>
           Book Now <ExternalLinkIcon className="w-5 h-5 ml-2" />
         </Button>
       </div>

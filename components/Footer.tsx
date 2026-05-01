@@ -164,10 +164,10 @@ export function Footer() {
               <li className="flex items-center space-x-3">
                 <MailIcon className="w-5 h-5 text-primary flex-shrink-0" />
                 <a
-                  href="mailto:info@luxeridexdmv.com"
+                  href="mailto:Info@luxridex.com"
                   className="text-grey-medium hover:text-primary transition-colors text-sm"
                 >
-                  info@luxeridexdmv.com
+                  Info@luxridex.com
                 </a>
               </li>
             </ul>

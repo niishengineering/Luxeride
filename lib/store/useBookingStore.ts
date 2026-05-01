@@ -9,6 +9,7 @@ interface BookingState {
   selectedVehicle: VehicleQuote | null;
   activeTrip: Trip | null;
   step: number;
+  isModalOpen: boolean;
   
   setPickup: (loc: Location | null) => void;
   setDropoff: (loc: Location | null) => void;
@@ -16,6 +17,7 @@ interface BookingState {
   setSelectedVehicle: (vehicle: VehicleQuote | null) => void;
   setActiveTrip: (trip: Trip | null) => void;
   setStep: (step: number) => void;
+  setModalOpen: (open: boolean) => void;
   reset: () => void;
 }
 
@@ -26,6 +28,7 @@ export const useBookingStore = create<BookingState>((set) => ({
   selectedVehicle: null,
   activeTrip: null,
   step: 1,
+  isModalOpen: false,
 
   setPickup: (pickup) => set({ pickup }),
   setDropoff: (dropoff) => set({ dropoff }),
@@ -33,6 +36,7 @@ export const useBookingStore = create<BookingState>((set) => ({
   setSelectedVehicle: (selectedVehicle) => set({ selectedVehicle }),
   setActiveTrip: (activeTrip) => set({ activeTrip }),
   setStep: (step) => set({ step }),
+  setModalOpen: (isModalOpen) => set({ isModalOpen }),
   
   reset: () => set({
     pickup: null,
@@ -40,6 +44,7 @@ export const useBookingStore = create<BookingState>((set) => ({
     quote: null,
     selectedVehicle: null,
     activeTrip: null,
-    step: 1
+    step: 1,
+    isModalOpen: false
   })
 }));

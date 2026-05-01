@@ -6,6 +6,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import {Toaster} from 'sonner'
 import { AppStoreBanner } from "@/components/AppStoreBanner";
+import { GlobalBookingModal } from "@/components/booking/GlobalBookingModal";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default function RootLayout({
                    
             }}
 />
+        <GlobalBookingModal />
         <Footer />
       </body>
     </html>

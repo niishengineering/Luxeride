@@ -46,24 +46,14 @@ export default function ContactView({ data }: ContactViewProps) {
     {
       icon: PhoneIcon,
       title: 'Phone',
-      details: [
-        contact_section?.phone?.primary || "N/A", 
-        contact_section?.phone?.alternative || ""
-      ].filter(Boolean),
-      action: contact_section?.phone?.primary 
-        ? `tel:${contact_section.phone.primary.replace(/\D/g,'')}` 
-        : undefined
+      details: ["(202) 355-1410"],
+      action: "tel:2023551410"
     },
     {
       icon: MailIcon,
       title: 'Email',
-      details: [
-        contact_section?.email?.primary || "N/A", 
-        contact_section?.email?.alternative || ""
-      ].filter(Boolean),
-      action: contact_section?.email?.primary 
-        ? `mailto:${contact_section.email.primary}` 
-        : undefined
+      details: ["Info@luxridex.com"],
+      action: "mailto:Info@luxridex.com"
     },
     {
       icon: MapPinIcon,

@@ -15,11 +15,10 @@ import { ApiVehicle } from '@/components/marketplace/VehicleCard';
 import { ImageCarousel } from '@/components/listing/ImageCarousel';
 import { getVehicleById } from '@/lib/api/vehicle';
 import { useParams } from 'next/navigation';
-
-
+import { useBookingStore } from '@/lib/store/useBookingStore';
 
 export default function VehiclePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setModalOpen } = useBookingStore();
   const [vehicleData, setVehicleData] = useState<ApiVehicle | null>(null);
   const params = useParams();
   const { id } = params as { id: string };
@@ -170,7 +169,7 @@ export default function VehiclePage() {
                 </div>
 
                 <button 
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setModalOpen(true)}
                   className="w-full bg-primary hover:bg-yellow-500 text-black font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
                 >
                   Book Now
@@ -187,12 +186,6 @@ export default function VehiclePage() {
         </div>
       </div>
 
-      {/* MODAL */}
-      <BookingModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        vehicle={modalData} 
-      />
 
     </main>
   );
